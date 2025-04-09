@@ -510,6 +510,8 @@ import 'echarts/lib/component/markPoint'
 import type { TabsPaneContext } from 'element-plus'
 import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
 import { useAppStore } from '@/store/modules/app'
+import { getTableList, batchGetTableList } from '@/api/design/report'
+
 defineOptions({ name: 'Home10' })
 
 interface Advertising {
@@ -903,7 +905,12 @@ const initConversion = (realtimeData) => {
   series2.markPoint.data[1].coord = oilGaugeMarkPoint.value.goOut
 }
 const clickSelectConversion = async (val) => {
-
+  let res = await getTableList('example_overview_realtime_data', { type: 3 })
+  goTo.value = []
+  goOut.value = []
+  oilGaugeLineXAxis.value = []
+  initConversion(res.records[0])
+  defaultConversion.value = val
 }
 
 const moreServicesList = ref([
@@ -1059,7 +1066,9 @@ const initZnzs = (data) => {
 }
 // 点击智能助手tabs事件
 const handleClick = async (tab: TabsPaneContext, event: Event) => {
-
+  let res = await getTableList('example_overview_intelligent_assistants', {
+    type: tab.props.name
+  })
   initZnzs(res.records[0])
 }
 const znzsSeries = ref<number[]>([])
@@ -1212,7 +1221,42 @@ watch(
 )
 
 const init = async () => {
+  let oneres = await batchGetTableList(
+    'example_overview_conversion,example_overview_merchant,example_overview_merchant_cou,example_overview_realtime_data,example_overview_intelligent_assistants,example_overview_pending,example_overview_service_notices'
+  )
 
+  conversion.value = oneres.example_overview_conversion.records[0]
+  oilGaugeValue.value = oneres.example_overview_conversion.records[0].fwzfzhl
+  merchantIntroduction.value = oneres.example_overview_merchant.records
+  sjjysl.value = oneres.example_overview_merchant_cou.records[0].cou
+  let realtimeData = oneres.example_overview_realtime_data.records[0]
+  let intelligentAssistants = oneres.example_overview_intelligent_assistants.records[0]
+  let overviewPending = oneres.example_overview_pending.records
+  initConversion(realtimeData)
+  initZnzs(intelligentAssistants)     
+  numTop.value = '-' + overviewPending.length * 60 + 'px'
+  for (let i = 1; i <= overviewPending.length; i++) {
+    animationList.value.push(i)
+  }
+  animationList.value.reverse()
+  if (overviewPending.length > 3) {
+    overviewPendingLen.value = overviewPending.length - 3
+  }
+  znzsIntroduce.value = overviewPending.slice(0, 3)
+  fwtzList.value = oneres.example_overview_service_notices.records
+
+  let endres = await batchGetTableList(
+    'example_overview_rulescenter,example_overview_productnews,example_overview_learningcenter'
+  )
+  let rulescenter = endres.example_overview_rulescenter.records
+  let productnews = endres.example_overview_productnews.records
+  let learningcenter = endres.example_overview_learningcenter.records
+  rightList.value[0].content = rulescenter
+  rightList.value[0].totalTitle = '共计' + rulescenter.length + '条信息'
+  rightList.value[1].content = productnews
+  rightList.value[1].totalTitle = '共计' + productnews.length + '条信息'
+  rightList.value[2].content = learningcenter
+  rightList.value[2].totalTitle = '共计' + learningcenter.length + '条信息'
 }
 
 onMounted(() => {

@@ -70,7 +70,74 @@ const remainingRouter: AppRouteRecordRaw[] = [
       }
     ]
   },
-
+  {
+    path: '/user',
+    component: Layout,
+    name: 'UserInfo',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'profile',
+        component: () => import('@/views/Profile/Index.vue'),
+        name: 'Profile',
+        meta: {
+          canTo: true,
+          hidden: true,
+          noTagsView: false,
+          icon: 'ep:user',
+          title: t('common.profile')
+        }
+      },
+      {
+        path: 'notify-message',
+        component: () => import('@/views/system/notify/my/index.vue'),
+        name: 'MyNotifyMessage',
+        meta: {
+          canTo: true,
+          hidden: true,
+          noTagsView: false,
+          icon: 'ep:message',
+          title: '我的站内信'
+        }
+      }
+    ]
+  },
+  {
+    path: '/job',
+    component: Layout,
+    name: 'JobL',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'job-log',
+        component: () => import('@/views/infra/job/logger/index.vue'),
+        name: 'InfraJobLog',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '调度日志',
+          activeMenu: 'infra/job/index',
+          catalogue: true,
+        }
+      }
+    ]
+  },
+  // {
+  //   path: '/login',
+  //   component: () => import('@/views/Login/sutra/Login.vue'),
+  //   name: 'Login',
+  //   meta: {
+  //     hidden: true,
+  //     title: t('router.login'),
+  //     noTagsView: true
+  //   }
+  // },
   {
     path: '/login',
     component: () => import('@/views/Login/Login.vue'),
@@ -81,7 +148,26 @@ const remainingRouter: AppRouteRecordRaw[] = [
       noTagsView: true
     }
   },
-
+  {
+    path: '/sso', //第三方登录
+    component: () => import('@/views/Login/Login.vue'),
+    name: 'SSOLogin',
+    meta: {
+      hidden: true,
+      title: t('router.login'),
+      noTagsView: true
+    }
+  },
+  {
+    path: '/social-login',
+    component: () => import('@/views/Login/SocialLogin.vue'),
+    name: 'SocialLogin',
+    meta: {
+      hidden: true,
+      title: t('router.socialLogin'),
+      noTagsView: true
+    }
+  },
   {
     path: '/403',
     component: () => import('@/views/Error/403.vue'),
@@ -104,7 +190,145 @@ const remainingRouter: AppRouteRecordRaw[] = [
       catalogue: true,
     }
   },
+  {
+    path: '/500',
+    component: () => import('@/views/Error/500.vue'),
+    name: 'Error',
+    meta: {
+      hidden: true,
+      title: '500',
+      noTagsView: true,
+      catalogue: true,
+    }
+  },
+  {
+    path: '/bpm',
+    component: Layout,
+    name: 'bpm',
+    meta: {
+      hidden: true,
+    },
+    children: [
+      {
+        path: '/manager/model/edit',
+        component: () => import('@/views/bpm/model/editor/index.vue'),
+        name: 'BpmModelEditor',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '设计流程',
+          activeMenu: '/bpm/manager/model',
+          catalogue: true,
+        }
+      },
+      {
+        path: '/manager/definition',
+        component: () => import('@/views/bpm/definition/index.vue'),
+        name: 'BpmProcessDefinition',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '流程定义',
+          activeMenu: '/bpm/manager/model',
+          catalogue: true,
+        }
+      },
+      {
+        path: '/manager/task-assign-rule',
+        component: () => import('@/views/bpm/taskAssignRule/index.vue'),
+        name: 'BpmTaskAssignRuleList',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '任务分配规则',
+          catalogue: true,
+        }
+      },
+      {
+        path: '/process-instance/create',
+        component: () => import('@/views/bpm/processInstance/create/index.vue'),
+        name: 'BpmProcessInstanceCreate',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '发起流程',
+          activeMenu: 'bpm/processInstance/create',
+          catalogue: true,
+        }
+      },
+      {
+        path: '/process-instance/detail',
+        component: () => import('@/views/bpm/processInstance/detail/index.vue'),
+        name: 'BpmProcessInstanceDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '流程详情',
+          activeMenu: 'bpm/processInstance/detail',
+          catalogue: true,
+        }
+      },
+    ]
+  },
+  {
+    path: '/test',
+    component: () => import('@/views/test/index.vue'),
+    name: 'Test',
+    meta: {
+      hidden: true,
+      title: '测试页',
+      catalogue: true,
+      noTagsView: true
+    }
+  },
+  {
+    path: '/low',
+    name: 'LowCode',
+    meta: { hidden: true },
+    component: Layout,
+    children: [
+      {
+        path: '/low/table/test/:id',
+        name: 'TableTest',
+        meta: { hidden: true, title: '功能测试', icon: 'ep:view', activeMenu: '/lowdev/tableDesign', catalogue: true },
+        component: () => import('@/views/lowdesign/tableView/index.vue')
+      },
+      {
+        path: '/low/report/test/:code',
+        name: 'ReportTest',
+        meta: { hidden: true, title: '报表功能测试', icon: 'ep:view', activeMenu: '/lowdev/reportDesign', catalogue: true },
+        component: () => import('@/views/lowdesign/reportView/index.vue')
+      },
+    ]
+  },
 
+  {
+    path: '/form/external/:type/:id',
+    component: () => import('@/views/lowdesign/formView/index.vue'),
+    name: 'formExternal',
+    meta: {
+      hidden: true,
+      title: '表单',
+      noTagsView: true,
+      catalogue: true,
+    }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/Error/404.vue'),
+    name: '',
+    meta: {
+      title: '404',
+      hidden: true,
+      breadcrumb: false,
+      catalogue: true,
+    }
+  }
 ]
 
 export default remainingRouter
